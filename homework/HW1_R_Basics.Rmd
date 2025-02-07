@@ -3,9 +3,10 @@ title: "HW1: R Basics"
 ---
 
 ## Getting Started with R
+
 ## Task One: R Overview & Preliminaries
 
-In this task, you will learn about the R programming language and write basic R commands. This will make a lot more sense after you read https://r4ds.hadley.nz/workflow-basics.html. Put your code inside the empty blocks and run them to see the result. Save often!
+In this task, you will learn about the R programming language and write basic R commands. This will make a lot more sense after you read <https://r4ds.hadley.nz/workflow-basics.html>. Put your code inside the empty blocks and run them to see the result. Save often!
 
 ### Basic R Commands
 
@@ -96,14 +97,13 @@ We'll be using different tools in order to work with data and generate statistic
 library(tidyverse)
 ```
 
-
 ## Task Two: Data Structures in R: Data frames
 
 Data frames are how R stores tabular data, like a spreadsheet. In this task, you will learn how to read a CSV file into RStudio.
 
 ## Load some CSV data
 
-One thing we'll do a lot in this class is load some CSV data using the `read_csv()` function that the tidyverse provides. Follow along here: https://r4ds.hadley.nz/data-import and put the code below that loads the students.csv file from the URL provided:
+One thing we'll do a lot in this class is load some CSV data using the `read_csv()` function that the tidyverse provides. Follow along here: <https://r4ds.hadley.nz/data-import> and put the code below that loads the students.csv file from the URL provided:
 
 ```{r}
 students <- read_csv("data/students.csv")
@@ -122,6 +122,4 @@ You're done with code once you hit Section 7.2.1 on the page, but if you had tro
 
 i struggled with the last two questions and figuring out how to load the library because an error message kept showing up
 
-
-IMPORTANT: Be sure to save your work (Cmd-S or Ctrl-S will do it) 
-and then switch over to GitHub Desktop and add, commit and push this file to GitHub. Contact me or Matt if you're having trouble.
+IMPORTANT: Be sure to save your work (Cmd-S or Ctrl-S will do it) and then switch over to GitHub Desktop and add, commit and push this file to GitHub. Contact me or Matt if you're having trouble.
