@@ -11,6 +11,8 @@ You will need to load the tidyverse library and the janitor library
 ```{r}
 library(tidyverse)
 library(janitor)
+library(dplyr)
+
 ```
 
 Then you'll load the data from the web. The URL for the data is: https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/md_cities_crime_2019_2020.csv. You will create a dataframe called `md_cities` that contains the data from this URL.
@@ -62,3 +64,16 @@ Property and violent crime across Maryland cities have seen massive changes from
 ### Task 9: Save Your Work and Put it on GitHub
 
 Save this notebook, then commit it to your local repository. Push the changes to your GitHub repository and submit the URL for this file in ELMS.
+
+###Task 10
+"Take the HW4_MD_CityCrime.Rmd notebook you worked on and add a section at the bottom called Task 10. Your task will be to take the violent crime rates for 2020 and do three things:
+
+Using the 2020 violent crime rate, calculate the percentiles using `ntile()`. Save the results to a new dataframe called `md_cities_percentiles`. How many cities are above the 90th percentile?
+Calculate the Interquartile Range of the 2020 violent crime rate using `summarize()` and R's `IQR()` function. The syntax is similar to how `mean()` works."
+
+```{r}
+md_cities_rates <- crime |>
+  mutate((ntile = violent_rate_2020))
+
+```
+
