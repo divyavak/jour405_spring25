@@ -1,0 +1,123 @@
+# JOUR405: Statistics for Journalists
+
+## Midterm Exam - Spring 2025
+
+Name: Divya Vakkalanka
+
+For this exam, you'll analyze several datasets using R and the statistical concepts we've covered in class. Load the tidyverse before beginning, then complete each task. Write your code in the provided blocks and answer the questions in complete sentences. Start by loading the tidyverse and any other libraries you think you might need.
+```{r}
+library(tidyverse)
+```
+
+
+## Part 1: Restaurant Health Inspections (15 points)
+
+You want to understand how restaurants in Montgomery County are performing on health inspections. The first dataset contains restaurant health inspection scores for restaurants in Montgomery County. The dataset includes the name of the establishment, the number of points for critical and non-critical areas, the total points, maximum points possible and the compliance score and grade. Load the data from: `https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/montco_inspections.csv` and complete these tasks:
+```{r}
+health_inspections <- read_csv("https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/montco_inspections.csv")
+```
+
+
+### Tasks:
+
+1.  Calculate the mean and standard deviation of compliance scores (5 points)
+2.  Create a histogram of the compliance scores with a vertical line showing the mean (5 points)
+3.  Write 2-3 sentences interpreting what the standard deviation and histogram tell us about the distribution of compliance scores. What would be newsworthy about this distribution? What's the story here? (5 points).
+
+```{r}
+health_inspections |> 
+  summarize(sd_compliance_score = sd(compliance_score), mean_compliance_score = mean(compliance_score))
+health_inspections |> 
+  ggplot(aes(x = compliance_score)) +
+  geom_histogram(binwidth = 5, fill = "blue", color = "black") +
+  labs(title = "Distribution of Restaurant Compliance Scores", x = "Compliance Scores", y = "Number of Restaurants")
+"The newsworthy element of this data shows that most restaurants are performing pretty well in terms of health compliance in Montgomery County. The average compliance score is 93.3 with only a few outlier restaurants beneath the score of 80."
+```
+
+
+
+## Part 2: High School Athletics (25 points)
+
+You are reporting a story about high school sports participation in Maryland and want to see if there are differences between boys and girls. The second dataset shows participation numbers in high school sports across Maryland counties in 2024, broken down by sport and sex. Load the data from: `https://raw.githubusercontent.com/example/md_hs_sports_2024.csv` and complete these tasks:
+
+### Tasks:
+
+1.  Calculate the correlation between boys' and girls' participation (5 points)
+2.  Add two columns called total and girls_pct using mutate(), with the total adding together boys and girls and girls_pct being the percentage of the total represented by girls participants. (5 points)
+3.  Create a scatterplot showing this relationship, adding a line of best fit (5 points)
+4.  In 2-3 sentences, explain what the correlation coefficient and scatterplot reveal about equity in Maryland high school sports participation. How do you interpret the school districts that are below the line vs those that are above? Which school districts are most worth examining further, and why? (10 points)
+
+```{r}
+hs_athletics <- read_csv("https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/md_hs_participation.csv")
+hs_athletics |> 
+  summarize(correlation = cor(boys, girls))
+hs_athletics <- hs_athletics |> mutate(athlete_total = boys + girls)
+hs_athletics |> mutate(girls_pct = girls/athlete_total * 100)
+hs_athletics |> 
+  ggplot() +
+  geom_point(aes(x = girls, y = athlete_total)) 
+  geom_smooth(aes(x = girls, y = athlete_total), method = 'lm') 
+  geom_text(aes(x = girls, y = athlete_total, label = District)) 
+  "The correlation between the total athletes and girls shows that typically when the number of athletes increase, the female participants also increase. Allegany, Charles and Somerset County have the least amount of girl athletes as a percentage of the total athlete population which should be the focus for cause of concern since the rates are lower than the rest of the state. Districts above the line mean that for a higher athlete total, the proportion of girls are higher compared to schools below the line. 
+```
+
+## Part 3: Public Transit Ridership (20 points)
+
+You are investigating public transit ridership in the Washington, D.C. area and want to understand the patterns of daily bus and rail ridership. The third dataset contains daily bus and rail ridership totals from WMATA for the past year. Load the data from <https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/wmata_daily.csv> and do the following:
+
+### Tasks:
+
+
+1.  Calculate the average bus and rail ridership and standard deviation using summarize() (5 points)
+2.  Using the process you used in class, take a random sample daily ridership numbers and calculate the sample means and deviations for bus and rail. The number in the sample is up to you, but explain why you chose what you did. Compare this to the stats you generated in step 1. (5 points)
+3.  Using group_by() and summarize(), calculate the means for bus and rail ridership for each weekday. Describe the overall pattern of ridership for bus and rail - which days stand out and why? Are there differences between bus and rail in the standard deviation values? (10 points)
+
+```{r}
+ridership <- read_csv("https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/wmata_daily.csv")
+ridership |> summarize(mean = mean(bus), sd = sd(bus))
+ridership |> summarize(mean = mean(rail), sd = sd(rail))
+sample_100 <- ridership |>
+  sample_n(100)
+sample_100 |> summarize(mean = mean(rail), sd = sd(rail))
+sample_100 |> summarize(mean = mean(bus), sd = sd(bus))
+
+```
+
+"I chose 100 because out of the tens of thousands of riders everyday, it would have a sample that might have enough variance in it to be better representative than a lower number could"
+"The standard deviation has more variance for rail than bus, but even within the sample, a high rate of standard deviation"
+
+
+## Part 4: Maryland Car Theft Rates (20 points)
+
+Your editor has assigned you a story about car thefts in Maryland and wants you to analyze the data to find out which counties have the highest rates. The fourth dataset contains car theft statistics for Maryland counties in 2023 and population. Load the data from: `https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/md_car_thefts.csv` and complete the following tasks:
+
+### Tasks:
+
+1.  Using mutate, add a column that calculates the rate of car thefts for each county - you need to choose the per capita rate (5 points)
+2.  Calculate the median car theft rate and the total number of car thefts statewide. Which counties have rates above the median, and what percentage of all car thefts occur in those counties? (5 points)
+3.  Write 2-3 sentences describing what these calculations reveal about the distribution of car thefts in Maryland. What's the lede of a story about your findings? (10 points)
+
+```{r}
+car_thefts <- read_csv("https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/md_car_thefts.csv")
+
+county_thefts <- car_thefts |>
+   mutate(car_thefts = 2022/population * 1000) |>
+
+
+```
+
+## Part 5: Data Analysis Scenario (20 points)
+
+You receive a tip that local emergency response times have gotten significantly worse over the past year. You obtain monthly data on response times for police, fire and ambulance calls.
+
+Write 3-4 sentences (no code!) explaining: 1. What statistical measures would you calculate to verify this claim? (10 points) 2. What visualizations would help readers understand the trends? (5 points) 3. What additional context or data would you need to make this a complete story? (5 points)
+
+"I would analyze the data to compare how long it would previously take for calls to the current response rates and see the difference. Then I would create a bar graph to display the differences over time in how much the response times changed. Additional context needed could be if there were any changes in staffing or systems that are causing the difference in response times."
+### Submission Instructions
+
+-   Save your work frequently
+-   Make sure all code blocks run without errors
+-   Provide clear explanations for your analytical choices
+-   Before submitting, clear your environment and run the entire notebook
+
+Good luck!
