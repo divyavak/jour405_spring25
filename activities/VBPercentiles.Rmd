@@ -11,8 +11,11 @@ library(tidyverse)
 
 
 ### Task 2: Load the data
+
+```{r}
 matches <- read_csv("https://raw.githubusercontent.com/dwillis/NCAAWomensVolleyballData/refs/heads/main/data/ncaa_womens_volleyball_matchstats_2024.csv")
 view(matches)
+```
 
 
 ### Task 3: Create totals of aces for each team using `group_by()` and `summarize()`

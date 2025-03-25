@@ -101,7 +101,7 @@ Your editor has assigned you a story about car thefts in Maryland and wants you 
 car_thefts <- read_csv("https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/md_car_thefts.csv")
 
 county_thefts <- car_thefts |>
-   mutate(car_thefts = 2022/population * 1000) |>
+   mutate(car_thefts = /2022/population * 1000) |>
 
 
 ```
