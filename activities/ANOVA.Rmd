@@ -63,7 +63,7 @@ print(admission_summary)
 
 Write a couple of sentences describing the differences in SAT scores between types of colleges, using the descriptive statistics we just generated.
 
-
+Private colleges have the highest had the highest mean SAT scores, public colleges are in the middle and community colleges have the lowest average SAT scores. Public schools had the least variability in scores since the standard deviation was the lowest and community colleges had the highest where their max score was 1393 and their min was 786. 
 
 ## Task 4: Visualize the Data
 
@@ -133,3 +133,6 @@ Based on our analysis, we can now answer:
 
 Answer those questions, providing evidence for your answers, and then write a headline and a lead paragraph reporting these findings using active voice and focusing on the differences across types.
 
+There is a significant difference in SAT scores across the different college types with the mean score of private colleges being 400 greater than that for communtity colleges and 100 greater than the public college average. The variability across the scores in those categories as well differed, with private schools having the least varied scores, communtity college having the most difference in the scores. 
+
+Headline: Private Colleges Have The Highest Average SAT Scores
