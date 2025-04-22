@@ -1,0 +1,13 @@
+---
+title: "final_project"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(readr)
+```
+```{r}
+spotifyData <- read_csv("https://huggingface.co/datasets/maharshipandya/spotify-tracks-dataset/resolve/main/dataset.csv")
+```
+This data has 114,00 tracks and covers release dates from the 1920s to the 2020s. There are different metrics like stream counts, popularity, artist, album, danceability and more. I will be looking specifically at popularity, stream count, artists, the duration of the song in milliseconds. These will allow me to find the average length of songs, the popularity and streaming of it and more. I need to know what popularity is measured as. 
