@@ -11,3 +11,6 @@ library(readr)
 spotifyData <- read_csv("https://huggingface.co/datasets/maharshipandya/spotify-tracks-dataset/resolve/main/dataset.csv")
 ```
 This data has 114,00 tracks and covers release dates from the 1920s to the 2020s. There are different metrics like stream counts, popularity, artist, album, danceability and more. I will be looking specifically at popularity, stream count, artists, the duration of the song in milliseconds. These will allow me to find the average length of songs, the popularity and streaming of it and more. I need to know what popularity is measured as. 
+
+
+Tests to run: I think I would run the one way ANOVA test to see the song durations over the years and can use z-scores to see which songs are unusually longer and shorter to identify outliers. I will run the Pearson's test for the streams and to find the correlation between streaming popularity and song durations. I have used deepseek ai to help me out in finding which test would help me best understand the correlation using past code examples.  
