@@ -10,6 +10,64 @@ library(readr)
 ```{r}
 spotifyData <- read_csv("https://huggingface.co/datasets/maharshipandya/spotify-tracks-dataset/resolve/main/dataset.csv")
 ```
+
+```{r}
+spotifyData |> summarise(mean = mean(popularity), sd = sd(popularity))
+```
+
+This gave us the average popularity score of songs in the dataset
+```{r}
+top_artists <- spotifyData %>%
+  separate_rows(artists, sep = ", ") %>% 
+  mutate(artists = str_remove_all(artists, "\\[|\\]|\\'")) %>% 
+  count(artists, sort = TRUE) %>%
+  top_n(100, n) %>%
+  pull(artists)
+```
+this code helped us split the artists and clean up their names so the data is more cohesive
+```{r}
+top_artists_data <- spotifyData %>%
+  separate_rows(artists, sep = ", ") %>%
+  mutate(artists = str_remove_all(artists, "\\[|\\]|\\'")) %>%
+  filter(artists %in% top_artists)
+```
+
+
+```{r}
+artist_anova <- aov(duration_ms ~ artists, data = top_artists_data)
+anova_summary <- summary(artist_anova)
+```
+
+```{r}
+top_artists_duration <- top_artists_data %>%
+  group_by(artists) %>%
+  summarize(
+    mean_duration = mean(duration_ms)/60000, # Convert to minutes
+    track_count = n()
+  ) %>%
+  arrange(desc(mean_duration)) %>%
+  head(20)
+```
+This code helps us understand the average duration of songs based on the top artists
+```{r}
+ggplot(top_artists_duration, aes(x = reorder(artists, mean_duration), y = mean_duration)) +
+  geom_col(fill = "#1DB954") + # Spotify green
+  coord_flip() +
+  labs(
+    x = "Artist",
+    y = "Average Song Duration (minutes)",
+    title = "Average Song Duration by Top Artists",
+    subtitle = "Top 20 artists from the dataset with longest average song durations"
+  ) +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold"))
+```
+This data helps us visualize which spotify artists have the highest song durations and how long those are on average. 
+
+https://docs.google.com/document/d/17YWMLOfGdn_PaNIZaa_926CTAU8HWbZXm_FtWiRwf5A/edit?usp=sharing 
+I have provided the link of what I searched here.
+
+
 This data has 114,00 tracks and covers release dates from the 1920s to the 2020s. There are different metrics like stream counts, popularity, artist, album, danceability and more. I will be looking specifically at popularity, stream count, artists, the duration of the song in milliseconds. These will allow me to find the average length of songs, the popularity and streaming of it and more. I need to know what popularity is measured as. 
 
 
