@@ -2,20 +2,33 @@
 title: "final_project"
 output: html_document
 ---
+This project aims to explore and analyze the spotify dataset and the different factors of music released related to popularity of songs, durations and compare some of the different variables of the popular music and artists on the streaming platform using different modes of analysis. 
 
 ```{r}
+library(corrplot)
 library(tidyverse)
 library(readr)
+library(knitr)
 ```
+The data from Hugging Face has over 114,000 tracks from spotify and includes different statistics like valence, tempo, danceability and populairty. 
 ```{r}
 spotifyData <- read_csv("https://huggingface.co/datasets/maharshipandya/spotify-tracks-dataset/resolve/main/dataset.csv")
 ```
-
+This finds the average popularity score that each song gets. 
 ```{r}
 spotifyData |> summarise(mean = mean(popularity), sd = sd(popularity))
 ```
+This code block helps clear out the tracks that are duplicates to ensure that each song is unique and not a duplicate when looking at the data so it isn't skewed nd the average is still stable and not impacted. 
+```{r}
+spotifyData_unique <- spotifyData %>%
+  select(-track_genre) %>%
+  distinct(track_id, .keep_all = TRUE)
 
-This gave us the average popularity score of songs in the dataset
+spotifyData_unique |> summarise(mean = mean(popularity), sd = sd(popularity))
+```
+
+
+The artist duration analysis helps us clean up the data and give us the top artists.  
 ```{r}
 top_artists <- spotifyData %>%
   separate_rows(artists, sep = ", ") %>% 
@@ -24,7 +37,8 @@ top_artists <- spotifyData %>%
   top_n(100, n) %>%
   pull(artists)
 ```
-this code helped us split the artists and clean up their names so the data is more cohesive
+
+This artist duration analysis with ANOVA compares the song durations between different artists and how long their songs tend to be. The analysis seeks to explain the trends of song lengths in music, and how artists like Pink Floyd have many songs which are longer in duration and can be reflected that it is not a random chance but a consistent choice. 
 ```{r}
 top_artists_data <- spotifyData %>%
   separate_rows(artists, sep = ", ") %>%
@@ -32,7 +46,7 @@ top_artists_data <- spotifyData %>%
   filter(artists %in% top_artists)
 ```
 
-
+The next three code blocks create the summary of the top artists data and plot the top artists who have long song durations and how long they are in minutes. These are longer than the average pop artists song durations. Boris Brejcha has the longest song durations and is one the top artists which is why he shows up at the top. 
 ```{r}
 artist_anova <- aov(duration_ms ~ artists, data = top_artists_data)
 anova_summary <- summary(artist_anova)
@@ -42,13 +56,13 @@ anova_summary <- summary(artist_anova)
 top_artists_duration <- top_artists_data %>%
   group_by(artists) %>%
   summarize(
-    mean_duration = mean(duration_ms)/60000, # Convert to minutes
+    mean_duration = mean(duration_ms)/60000, 
     track_count = n()
   ) %>%
   arrange(desc(mean_duration)) %>%
   head(20)
 ```
-This code helps us understand the average duration of songs based on the top artists
+
 ```{r}
 ggplot(top_artists_duration, aes(x = reorder(artists, mean_duration), y = mean_duration)) +
   geom_col(fill = "#1DB954") + # Spotify green
@@ -62,7 +76,41 @@ ggplot(top_artists_duration, aes(x = reorder(artists, mean_duration), y = mean_d
   theme_minimal() +
   theme(plot.title = element_text(face = "bold"))
 ```
-This data helps us visualize which spotify artists have the highest song durations and how long those are on average. 
+
+
+```{r}
+summary_stats <- spotifyData %>% 
+  select(popularity, danceability, acousticness, liveness, tempo, duration_ms) %>%
+  summary()
+kable(summary_stats)
+```
+
+Next, the descriptive statistics for the metrics including the popularity of songs, how acoustic a song sounds, if a song sounds live, the tempo and the song length are displayed. The data shows the central tendencies of the songs on spotify and can tell us if songs are generally popular or not and what type of songs spotify's dataset leans towards. 
+```{r}
+model <- lm(popularity ~ danceability + acousticness + liveness + tempo + duration_ms, 
+           data = spotifyData)
+summary(model)
+```
+In terms of danceability, an increase of 1 means that popularity of songs also goes up. On the other hand, durations of songs increasing by 1 milisecond means that songs tend to decrease slightly in popularity. This means that using danceability of a song is a good way for artists to understand which songs tend to be more popular. Popularity can also stem from how popular an artist is beyond spotify, how playlists might add those songs and other factors, or even social media popularity that is not necessarily covered in the data. On the contrary, popular songs might deliberately danceable which is a reverse causation to danceable songs becoming popular. 
+
+```{r}
+selected_vars <- spotifyData |>  
+  select(popularity, danceability, acousticness, liveness, tempo, duration_ms)
+cor(selected_vars)
+```
+
+The correlation matrix identifies which factors have stronger and weaker correlations among the Spotify dataset. The larger a circle, the higher the correlation and blue refers to positive correlations while red is negative. Based on this,the factors that are good for analysis include popular songs being slightly more danceable, popularity and accousticness having a weak negative link, popularity and tempo not having a causatory link, and danceable tracks being less acoustic so a negative link. 
+```{r}
+corr_matrix <- cor(selected_vars)
+corrplot(corr_matrix, method = "circle")
+```
+
+
+
+Story Pitch: 
+For artists, danceability is one of the best factors to look at if they want popular songs. Songs that are acoustic tend to be less popular. Additionally,  top artists who have longer songs tend to be popular. 
+I would focus my story to be on danceability being the factor for success on spotify for artists popularity with an average of 15 points higher in song popularity. It would be good to interview artists and music producers on what factors they prioritize in making the music, and what they do to make a song "danceable". Additionally, it would be worthwhile to see how the song length decreasing is a continuing trend in increasing popularity, especially with streams.
+
 
 https://docs.google.com/document/d/17YWMLOfGdn_PaNIZaa_926CTAU8HWbZXm_FtWiRwf5A/edit?usp=sharing 
 I have provided the link of what I searched here.
@@ -71,4 +119,3 @@ I have provided the link of what I searched here.
 This data has 114,00 tracks and covers release dates from the 1920s to the 2020s. There are different metrics like stream counts, popularity, artist, album, danceability and more. I will be looking specifically at popularity, stream count, artists, the duration of the song in milliseconds. These will allow me to find the average length of songs, the popularity and streaming of it and more. I need to know what popularity is measured as. 
 
 
-Tests to run: I think I would run the one way ANOVA test to see the song durations over the years and can use z-scores to see which songs are unusually longer and shorter to identify outliers. I will run the Pearson's test for the streams and to find the correlation between streaming popularity and song durations. I have used deepseek ai to help me out in finding which test would help me best understand the correlation using past code examples.  
