@@ -26,7 +26,7 @@ spotifyData_unique <- spotifyData %>%
 
 spotifyData_unique |> summarise(mean = mean(popularity), sd = sd(popularity))
 ```
-
+The average popularity of the songs was 33.20/100 which is moderately popular and most songs fall within 20 points of that songs. 
 
 The artist duration analysis helps us clean up the data and give us the top artists.  
 ```{r}
